@@ -1,8 +1,8 @@
 # auto-vm-config
 
-Builds a QEMU virtual machine and installs an old operating system into it without you
-sitting through the installer. You answer a handful of questions; it writes the disks,
-prepares the boot floppy, generates the installer's answer file, and starts the machine.
+Builds a QEMU virtual machine and installs its guest without you sitting through the
+installer. You answer a handful of questions; it writes the disks, prepares the boot
+floppy, generates the answer file the installer reads, and starts the machine.
 
 Windows 98 Second Edition is the guest it ships with.
 
@@ -15,8 +15,8 @@ uv run configure.py
 It asks what to install, where to put the machine, which disc to install from, and for
 a file holding the product key. Then the hardware — processor, memory, disk sizes,
 display, sound, network, pointer — and the details the installer would otherwise stop
-and ask for, such as the machine's name and time zone. Nothing is passed on the command
-line; there are no options.
+and ask for, such as the machine's name and time zone. It takes no command-line
+options.
 
 ## What it writes
 
@@ -53,7 +53,8 @@ Everything about a guest is data, under `guests/<name>/`:
 | `timezones.toml` | the time zones the guest recognises, with their offsets |
 | `assets/` | files copied into the machine, such as the startup batch file |
 
-Adding a guest means adding a folder. No code changes if it installs the same way.
+Adding a guest means adding a folder, so long as it installs the way this one does:
+boot a floppy, run setup against an answer file, then run whatever was staged.
 
 ## What it needs
 

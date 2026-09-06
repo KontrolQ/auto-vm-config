@@ -1,0 +1,220 @@
+[[group]]
+key = "processor"
+question = "Processor"
+kind = "choice"
+default = "pentium3"
+
+[[group.options]]
+value = "pentium3"
+label = "Pentium III"
+note = "MMX and SSE"
+
+[[group.options]]
+value = "pentium2"
+label = "Pentium II"
+note = "MMX"
+
+[[group.options]]
+value = "pentium"
+label = "Pentium"
+note = "no MMX"
+
+[[group.options]]
+value = "486"
+label = "486"
+note = "slowest, widest compatibility"
+
+
+[[group]]
+key = "memory_megabytes"
+question = "Memory"
+kind = "choice"
+default = 256
+
+[[group.options]]
+value = 64
+label = "64 MB"
+note = "period typical"
+
+[[group.options]]
+value = 128
+label = "128 MB"
+
+[[group.options]]
+value = 256
+label = "256 MB"
+note = "comfortable"
+
+[[group.options]]
+value = 512
+label = "512 MB"
+note = "the highest this system takes unpatched"
+
+
+
+[[group]]
+key = "system_disk_gigabytes"
+question = "System disk"
+kind = "choice"
+default = 4
+
+[[group.options]]
+value = 2
+label = "2 GB"
+
+[[group.options]]
+value = 4
+label = "4 GB"
+
+[[group.options]]
+value = 8
+label = "8 GB"
+
+[[group.options]]
+value = 32
+label = "32 GB"
+
+
+[[group]]
+key = "data_disk_gigabytes"
+question = "Second disk"
+kind = "choice"
+default = 4
+
+[[group.options]]
+value = 0
+label = "None"
+note = "system disk only"
+
+[[group.options]]
+value = 2
+label = "2 GB"
+
+[[group.options]]
+value = 4
+label = "4 GB"
+
+[[group.options]]
+value = 8
+label = "8 GB"
+
+[[group.options]]
+value = 32
+label = "32 GB"
+
+
+[[group]]
+key = "video"
+question = "Display adapter"
+kind = "choice"
+default = "cirrus"
+
+[[group.options]]
+value = "cirrus"
+label = "Cirrus Logic GD5446"
+note = "driver is in the box"
+
+[[group.options]]
+value = "std"
+label = "Standard VGA"
+note = "wants a VESA driver for high resolutions"
+
+[[group.options]]
+value = "vmware"
+label = "VMware SVGA II"
+note = "needs a supplied driver"
+
+
+[[group]]
+key = "sound"
+question = "Sound card"
+kind = "choice"
+default = "sb16"
+
+[[group.options]]
+value = "sb16"
+label = "Sound Blaster 16"
+note = "driver is in the box"
+
+[[group.options]]
+value = "es1370"
+label = "Ensoniq AudioPCI"
+note = "PCI, driver is in the box"
+
+[[group.options]]
+value = "ac97"
+label = "Intel AC97"
+note = "needs a supplied driver"
+
+[[group.options]]
+value = "none"
+label = "None"
+
+
+[[group]]
+key = "network"
+question = "Network adapter"
+kind = "choice"
+default = "pcnet"
+
+[[group.options]]
+value = "pcnet"
+label = "AMD PCnet PCI"
+note = "driver is in the box"
+
+[[group.options]]
+value = "ne2k_pci"
+label = "NE2000 PCI"
+note = "wants the RTL8029 driver"
+
+[[group.options]]
+value = "rtl8139"
+label = "Realtek RTL8139"
+note = "needs a supplied driver"
+
+[[group.options]]
+value = "none"
+label = "None"
+
+
+[[group]]
+key = "pointer"
+question = "Pointer"
+kind = "choice"
+default = "ps2"
+
+[[group.options]]
+value = "ps2"
+label = "PS/2 mouse"
+note = "captured by the window; right ctrl + g releases it"
+
+[[group.options]]
+value = "tablet"
+label = "USB tablet"
+note = "never captured, but needs USB support in the guest"
+
+
+[[group]]
+key = "shared_folder"
+question = "Shared folder"
+kind = "path"
+default = ""
+optional = true
+placeholder = "a folder on this machine to expose to the guest"
+
+
+[[group]]
+key = "power_management"
+question = "Power management"
+kind = "choice"
+default = "apm"
+
+[[group.options]]
+value = "apm"
+label = "APM"
+note = "steadier on this system"
+
+[[group.options]]
+value = "acpi"
+label = "ACPI"
+note = "can stall during setup"

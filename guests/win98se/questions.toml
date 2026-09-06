@@ -1,0 +1,61 @@
+[[question]]
+key = "owner_name"
+question = "Registered owner"
+kind = "entry"
+required = true
+limit = 30
+placeholder = "the name setup registers the installation to"
+section = "NameAndOrg"
+field = "Name"
+
+[[question]]
+key = "organisation"
+question = "Organisation"
+kind = "entry"
+required = false
+limit = 30
+placeholder = "left blank if you have none"
+section = "NameAndOrg"
+field = "Org"
+
+[[question]]
+key = "computer_name"
+question = "Computer name"
+kind = "entry"
+required = true
+limit = 15
+placeholder = "letters, digits and hyphens"
+pattern = "^[A-Za-z0-9-]{1,15}$"
+section = "Network"
+field = "ComputerName"
+
+[[question]]
+key = "workgroup"
+question = "Workgroup"
+kind = "entry"
+required = true
+default = "WORKGROUP"
+limit = 15
+pattern = "^[A-Za-z0-9-]{1,15}$"
+section = "Network"
+field = "Workgroup"
+
+[[question]]
+key = "computer_description"
+question = "Computer description"
+kind = "entry"
+required = false
+limit = 48
+placeholder = "shown to other machines on the network"
+section = "Network"
+field = "Description"
+
+[[question]]
+key = "install_directory"
+question = "Install directory"
+kind = "entry"
+required = true
+limit = 63
+default = "C:\\WINDOWS"
+section = "Setup"
+field = "InstallDir"

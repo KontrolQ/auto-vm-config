@@ -1,0 +1,73 @@
+[guest]
+identifier = "win98se"
+name = "Windows 98 Second Edition"
+family = "windows-9x"
+architecture = "x86"
+
+[disc]
+volume_identifiers = ["WIN98 SE"]
+markers = ["WIN98/OEMSETUP.EXE", "WIN98/PRECOPY1.CAB"]
+
+[setup]
+directory = "WIN98"
+program = "SETUP.EXE"
+arguments = "/IS /IQ /IE /IM /NR"
+
+[updates]
+directory = "C:\\SETUP"
+runner = "UPDATE.BAT"
+runner_asset = "UPDATE.BAT"
+step_asset = "UPDATE.STEP"
+
+[updates.answer_lines]
+Install = ["AddReg=RunOnce.Updates"]
+"RunOnce.Updates" = [
+    'HKLM,"Software\Microsoft\Windows\CurrentVersion\RunOnce","Updates",,"C:\SETUP\UPDATE.BAT"',
+]
+
+[boot]
+prefer = "disc"
+when_absent = "ask"
+media = "floppy-1440"
+startup_asset = "AUTOEXEC.BAT"
+startup_target = "AUTOEXEC.BAT"
+
+[answers]
+file = "MSBATCH.INF"
+target = "floppy"
+
+[answers.sections.Setup]
+Express = 1
+InstallType = 3
+EBD = 0
+ChangeDir = 0
+CleanBoot = 0
+DevicePath = 0
+NoPrompt2Boot = 1
+Reboot = 1
+OptionalComponents = 1
+ShowEula = 0
+
+[answers.sections.NameAndOrg]
+Display = 0
+
+[answers.sections.Network]
+Display = 0
+
+[answers.sections.MSTCP]
+LMHOSTS = 0
+DHCP = 1
+
+[clock]
+source = "host"
+rtc = "localtime"
+
+[product_key]
+required = true
+source = "file"
+pattern = "^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$"
+section = "Setup"
+field = "ProductKey"
+
+[installation]
+stop_before_booting = true

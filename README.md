@@ -4,7 +4,8 @@ Builds a QEMU virtual machine and installs its guest without you sitting through
 installer. You answer a handful of questions; it writes the disks, prepares the boot
 floppy, generates the answer file the installer reads, and starts the machine.
 
-Windows 98 Second Edition is the guest it ships with.
+One guest is defined so far, Windows 98 Second Edition. The disc and its product
+key are yours to supply.
 
 ## Running it
 

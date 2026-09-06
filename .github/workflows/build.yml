@@ -1,0 +1,57 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'check'
+            python: '3.11'
+            command: 'uv run ruff check . && uv run ruff format --check .'
+            os: 'ubuntu-latest'
+          - name: 'py311 (ubuntu)'
+            python: '3.11'
+            command: 'uv run python -c "import configure"'
+            os: 'ubuntu-latest'
+          - name: 'py312 (ubuntu)'
+            python: '3.12'
+            command: 'uv run python -c "import configure"'
+            os: 'ubuntu-latest'
+          - name: 'py313 (ubuntu)'
+            python: '3.13'
+            command: 'uv run python -c "import configure"'
+            os: 'ubuntu-latest'
+          - name: 'py314 (ubuntu)'
+            python: '3.14'
+            command: 'uv run python -c "import configure"'
+            os: 'ubuntu-latest'
+          # the emulator lookup, the shared folder and the launch script differ by
+          # platform, so both are run
+          - name: 'py311 (windows)'
+            python: '3.11'
+            command: 'uv run python -c "import configure"'
+            os: 'windows-latest'
+          - name: 'py313 (windows)'
+            python: '3.13'
+            command: 'uv run python -c "import configure"'
+            os: 'windows-latest'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv python install ${{ matrix.python }}
+
+      - run: uv sync --frozen --group dev --python ${{ matrix.python }}
+
+      - run: ${{ matrix.command }}
+        shell: bash

@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+build/
+*.qcow2
+*.img
+*.iso
+*.vmdk
+
+vm/
+
+bundled/

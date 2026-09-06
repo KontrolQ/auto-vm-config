@@ -11,7 +11,7 @@ markers = ["WIN98/OEMSETUP.EXE", "WIN98/PRECOPY1.CAB"]
 [setup]
 directory = "WIN98"
 program = "SETUP.EXE"
-arguments = "/IS /IQ /IE /IM /NR"
+arguments = "/IS /IQ /IE /IM /NR /NF"
 
 [updates]
 directory = "C:\\SETUP"
@@ -43,10 +43,13 @@ EBD = 0
 ChangeDir = 0
 CleanBoot = 0
 DevicePath = 0
-NoPrompt2Boot = 1
 Reboot = 1
-OptionalComponents = 1
+OptionalComponents = 0
 ShowEula = 0
+Uninstall = 0
+NoDirWarn = 1
+PenWinWarning = 0
+NoAppsWarn = 1
 
 [answers.sections.NameAndOrg]
 Display = 0

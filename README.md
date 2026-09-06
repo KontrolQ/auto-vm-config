@@ -21,12 +21,15 @@ line; there are no options.
 ## What it writes
 
 A folder named after the machine, holding the disk images, the boot floppy, and one
-script:
+script — `run.cmd` on Windows, `run.sh` on everything else:
 
 ```sh
-run.cmd install   # installs the guest, once
-run.cmd           # starts the machine, every time after that
+run.sh install   # installs the guest, once
+run.sh           # starts the machine, every time after that
 ```
+
+The script names the emulator and the images by absolute path, so it belongs to the
+machine that built it. Build again on another host rather than carrying it across.
 
 With a PS/2 pointer the window captures the mouse; **right ctrl + g** gives it back.
 Choosing the USB tablet instead means it is never captured, at the cost of needing USB

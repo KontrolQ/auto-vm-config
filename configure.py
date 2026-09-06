@@ -6,7 +6,7 @@ from cli_widgets.widgets import browser, choice, confirm, progress, prompting, s
 
 import clock
 from catalogue import addresses, gathering
-from definitions import loading, updates
+from definitions import loading, updates, zones
 from emulator import commands, devices, drives, launcher, sharing
 from install import answerfile, asking, building, media, staging
 
@@ -14,6 +14,9 @@ GUEST_DOCUMENT = "guest"
 HARDWARE_DOCUMENT = "hardware"
 QUESTIONS_DOCUMENT = "questions"
 UPDATES_DOCUMENT = "updates"
+ZONES_DOCUMENT = "timezones"
+
+TIME_ZONE_QUESTION = "time_zone"
 
 GROUPS = "group"
 QUESTIONS = "question"
@@ -117,8 +120,27 @@ def hardware_groups(definition):
     return [group for group in declared if group[asking.KEY] != SHARED_FOLDER]
 
 
+def offered_zones(definition):
+    return loading.document(definition, ZONES_DOCUMENT)
+
+
+def with_zones(declaration, definition):
+    if declaration[asking.KEY] != TIME_ZONE_QUESTION:
+        return declaration
+
+    held = offered_zones(definition)
+
+    return dict(
+        declaration,
+        options=zones.options_of(held),
+        default=zones.for_offset(held, clock.utc_offset_minutes()),
+    )
+
+
 def guest_questions(definition):
-    return loading.document(definition, QUESTIONS_DOCUMENT).get(QUESTIONS, [])
+    declared = loading.document(definition, QUESTIONS_DOCUMENT).get(QUESTIONS, [])
+
+    return [with_zones(declaration, definition) for declaration in declared]
 
 
 def report_sharing():

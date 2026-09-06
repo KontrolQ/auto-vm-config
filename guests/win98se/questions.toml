@@ -12,9 +12,10 @@ field = "Name"
 key = "organisation"
 question = "Organisation"
 kind = "entry"
-required = false
+required = true
+default = "Home"
 limit = 30
-placeholder = "left blank if you have none"
+placeholder = "setup asks for this itself if it is left empty"
 section = "NameAndOrg"
 field = "Org"
 
@@ -44,7 +45,8 @@ field = "Workgroup"
 key = "computer_description"
 question = "Computer description"
 kind = "entry"
-required = false
+required = true
+default = "Windows 98"
 limit = 48
 placeholder = "shown to other machines on the network"
 section = "Network"
@@ -59,3 +61,10 @@ limit = 63
 default = "C:\\WINDOWS"
 section = "Setup"
 field = "InstallDir"
+
+[[question]]
+key = "time_zone"
+question = "Time zone"
+kind = "choice"
+section = "Setup"
+field = "TimeZone"

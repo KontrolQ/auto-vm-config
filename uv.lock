@@ -1,0 +1,19 @@
+version = 1
+revision = 3
+requires-python = ">=3.11"
+
+[[package]]
+name = "auto-vm-config"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "cli-widgets" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "cli-widgets", git = "https://github.com/KontrolQ/cli-widgets?rev=main" }]
+
+[[package]]
+name = "cli-widgets"
+version = "0.1.1"
+source = { git = "https://github.com/KontrolQ/cli-widgets?rev=main#4ca8516e8041afc861a1c1165d099a94178d3cd5" }

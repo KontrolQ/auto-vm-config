@@ -1,0 +1,11 @@
+[project]
+name = "auto-vm-config"
+version = "0.1.0"
+description = "Build and unattended-install QEMU virtual machines from a configuration"
+requires-python = ">=3.11"
+dependencies = [
+    "cli-widgets @ git+https://github.com/KontrolQ/cli-widgets@main",
+]
+
+[tool.uv]
+package = false

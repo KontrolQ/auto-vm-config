@@ -3,9 +3,7 @@ import sys
 
 RUNNING_ON_WINDOWS = sys.platform == "win32"
 
-SAFE_CHARACTERS = set(
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" "@%_+=:,./-"
-)
+SAFE_CHARACTERS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@%_+=:,./-")
 
 FLAG_PREFIX = "-"
 

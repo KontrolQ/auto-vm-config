@@ -1,13 +1,12 @@
 import os
 import re
 
+from cli_widgets.rendering import frames, styling
+from cli_widgets.widgets import browser
+
 from install import validation
 from media.eltorito import images
-from media.iso9660 import descriptors
-from media.iso9660 import files
-from cli_widgets.rendering import frames
-from cli_widgets.rendering import styling
-from cli_widgets.widgets import browser
+from media.iso9660 import descriptors, files
 
 MARKERS = "markers"
 
@@ -44,9 +43,7 @@ def is_a_volume(path):
 
 def holds_the_markers(path, guest):
     with open(path, "rb") as handle:
-        return all(
-            files.exists(handle, marker) for marker in guest["disc"].get(MARKERS, [])
-        )
+        return all(files.exists(handle, marker) for marker in guest["disc"].get(MARKERS, []))
 
 
 def disc_validator(guest):
@@ -66,9 +63,7 @@ def disc_validator(guest):
 
 
 def ask_disc(guest, start="."):
-    return chosen_file(
-        "Installation disc", DISC_SUFFIXES, disc_validator(guest), start
-    )
+    return chosen_file("Installation disc", DISC_SUFFIXES, disc_validator(guest), start)
 
 
 def volume_of(path):
@@ -85,7 +80,7 @@ def wants_a_product_key(guest):
 
 
 def read_key(path):
-    with open(path, "r", encoding="ascii", errors="replace") as handle:
+    with open(path, encoding="ascii", errors="replace") as handle:
         return handle.read().strip()
 
 
@@ -109,9 +104,7 @@ def ask_product_key(guest, start="."):
         return ""
 
     return read_key(
-        chosen_file(
-            "Product key file", browser.ANY_FILE, key_file_validator(guest), start
-        )
+        chosen_file("Product key file", browser.ANY_FILE, key_file_validator(guest), start)
     )
 
 
@@ -131,17 +124,13 @@ def floppy_validator():
 
 
 def ask_floppy(start="."):
-    return chosen_file(
-        "Boot floppy image", FLOPPY_SUFFIXES, floppy_validator(), start
-    )
+    return chosen_file("Boot floppy image", FLOPPY_SUFFIXES, floppy_validator(), start)
 
 
 def floppy_for(disc_path, guest, start="."):
     if guest["boot"].get("prefer") == "disc" and disc_carries_a_floppy(disc_path):
         return NOTHING
 
-    frames.write(
-        "  " + styling.warning("this disc carries no boot floppy") + "\n"
-    )
+    frames.write("  " + styling.warning("this disc carries no boot floppy") + "\n")
 
     return ask_floppy(start)

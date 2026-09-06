@@ -1,8 +1,5 @@
 from filesystems.directories import entries
-from filesystems.fat32 import bootsector
-from filesystems.fat32 import information
-from filesystems.fat32 import sizing
-from filesystems.fat32 import table
+from filesystems.fat32 import bootsector, information, sizing, table
 from filesystems.naming import labels
 
 ROOT_DIRECTORY_CLUSTERS = 1

@@ -77,7 +77,7 @@ def is_available():
 
 
 def searched_places():
-    return ("the PATH",) + known_directories()
+    return ("the PATH", *known_directories())
 
 
 def refuse_when_missing():
@@ -85,6 +85,7 @@ def refuse_when_missing():
         return
 
     raise FileNotFoundError(
-        "%s was not found; looked in %s"
-        % (executable_name(SYSTEM_EMULATOR), ", ".join(searched_places()))
+        "{} was not found; looked in {}".format(
+            executable_name(SYSTEM_EMULATOR), ", ".join(searched_places())
+        )
     )

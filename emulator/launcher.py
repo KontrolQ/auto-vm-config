@@ -43,13 +43,11 @@ def line_ending():
 
 
 def template_path():
-    return os.path.join(
-        os.path.dirname(__file__), ASSETS_DIRECTORY, TEMPLATE_STEM + suffix()
-    )
+    return os.path.join(os.path.dirname(__file__), ASSETS_DIRECTORY, TEMPLATE_STEM + suffix())
 
 
 def template():
-    with open(template_path(), "r", encoding=ENCODING) as handle:
+    with open(template_path(), encoding=ENCODING) as handle:
         return handle.read()
 
 

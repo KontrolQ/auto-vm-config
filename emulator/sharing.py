@@ -28,7 +28,7 @@ def complaint():
         return "shared folders need a Samba daemon, which this host has none of"
 
     if not samba_is_present():
-        return "%s is not on the PATH, so no folder can be shared" % SAMBA_BINARY
+        return f"{SAMBA_BINARY} is not on the PATH, so no folder can be shared"
 
     return NO_COMPLAINT
 
@@ -39,7 +39,7 @@ def is_wanted(path):
 
 def refuse_missing_folder(path):
     if not os.path.isdir(path):
-        raise NotADirectoryError("%s is not a folder on this machine" % path)
+        raise NotADirectoryError(f"{path} is not a folder on this machine")
 
 
 def netdev_options(path):
@@ -48,7 +48,7 @@ def netdev_options(path):
 
     refuse_missing_folder(path)
 
-    return ["smb=%s" % os.path.abspath(path)]
+    return [f"smb={os.path.abspath(path)}"]
 
 
 def guest_address():

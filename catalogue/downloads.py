@@ -34,9 +34,8 @@ def to_file(address, path, progressed, digest=None):
     partial = path + PARTIAL_SUFFIX
 
     try:
-        with opened(addresses.absolute(address)) as answer:
-            with open(partial, "wb") as writing:
-                drained(answer, writing, progressed, digest)
+        with opened(addresses.absolute(address)) as answer, open(partial, "wb") as writing:
+            drained(answer, writing, progressed, digest)
     except BaseException:
         if os.path.isfile(partial):
             os.remove(partial)

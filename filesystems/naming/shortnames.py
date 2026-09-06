@@ -39,9 +39,7 @@ def fitted(text, length):
 def packed(name):
     stem, extension = split_into_stem_and_extension(name)
 
-    return (fitted(stem, STEM_LENGTH) + fitted(extension, EXTENSION_LENGTH)).encode(
-        "ascii"
-    )
+    return (fitted(stem, STEM_LENGTH) + fitted(extension, EXTENSION_LENGTH)).encode("ascii")
 
 
 def unpacked(raw):

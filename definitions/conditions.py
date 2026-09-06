@@ -24,14 +24,13 @@ ALWAYS = None
 def refuse_unknown_comparison(name):
     if name not in COMPARISONS:
         raise ValueError(
-            "%s is not a comparison; use one of %s"
-            % (name, ", ".join(sorted(COMPARISONS)))
+            "{} is not a comparison; use one of {}".format(name, ", ".join(sorted(COMPARISONS)))
         )
 
 
 def refuse_missing_field(condition):
     if FIELD not in condition:
-        raise ValueError("a condition needs a %s to compare" % FIELD)
+        raise ValueError(f"a condition needs a {FIELD} to compare")
 
 
 def comparisons_in(condition):
@@ -55,6 +54,4 @@ def met_by(condition, configuration):
 
     held = configuration.get(condition[FIELD])
 
-    return all(
-        holds_for(held, name, condition[name]) for name in comparisons_in(condition)
-    )
+    return all(holds_for(held, name, condition[name]) for name in comparisons_in(condition))

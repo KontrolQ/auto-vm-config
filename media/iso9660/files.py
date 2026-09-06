@@ -1,7 +1,4 @@
-from media.iso9660 import descriptors
-from media.iso9660 import directories
-from media.iso9660 import records
-from media.iso9660 import sectors
+from media.iso9660 import descriptors, directories, records, sectors
 
 
 def root_of(handle):
@@ -15,18 +12,16 @@ def root_of(handle):
 
 def refuse_when_absent(record, path):
     if record is None:
-        raise FileNotFoundError("%s is not on this disc" % path)
+        raise FileNotFoundError(f"{path} is not on this disc")
 
 
 def refuse_when_a_directory(record, path):
     if records.is_directory(record):
-        raise IsADirectoryError("%s is a directory, not a file" % path)
+        raise IsADirectoryError(f"{path} is a directory, not a file")
 
 
 def content_of(handle, record):
-    return sectors.span(
-        handle, records.extent_of(record), records.data_length_of(record)
-    )
+    return sectors.span(handle, records.extent_of(record), records.data_length_of(record))
 
 
 def located(handle, path):

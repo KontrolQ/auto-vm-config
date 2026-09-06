@@ -1,8 +1,6 @@
-from filesystems.directories import entries
-from filesystems.fat32 import allocation
-from filesystems.fat32 import directories
-from filesystems.fat32 import layout
 from filesystems import regions
+from filesystems.directories import entries
+from filesystems.fat32 import allocation, directories, layout
 
 SEPARATORS = "/\\"
 
@@ -63,9 +61,7 @@ def made_directory(region, parameters, components, moment):
         descended_to = descended(region, parameters, cluster, component)
 
         if descended_to is NOTHING_FOUND:
-            descended_to = directories.create(
-                region, parameters, cluster, component, moment
-            )
+            descended_to = directories.create(region, parameters, cluster, component, moment)
 
         cluster = descended_to
 
@@ -114,7 +110,7 @@ def read_content(region, parameters, chain, size):
 
 def refuse_when_missing(found, path):
     if found is NOTHING_FOUND:
-        raise FileNotFoundError("%s is not on this volume" % path)
+        raise FileNotFoundError(f"{path} is not on this volume")
 
 
 def located(region, parameters, path):
@@ -153,14 +149,10 @@ def write(region, parameters, path, content, moment):
         held = directories.details_at(region, parameters, replacing[0], replacing[1])
         allocation.release(region, parameters, held["first_cluster"])
 
-    chain = allocation.allocate(
-        region, parameters, clusters_needed(parameters, len(content))
-    )
+    chain = allocation.allocate(region, parameters, clusters_needed(parameters, len(content)))
     place_content(region, parameters, chain, content)
 
-    raw = entries.build(
-        name, entries.ARCHIVE, first_cluster_of(chain), len(content), moment
-    )
+    raw = entries.build(name, entries.ARCHIVE, first_cluster_of(chain), len(content), moment)
 
     if replacing is not NOTHING_FOUND:
         directories.place(region, parameters, replacing[0], replacing[1], raw)
@@ -190,6 +182,4 @@ def listed(region, parameters, path=""):
 
 
 def free_space(region, parameters):
-    return allocation.count_free(region, parameters) * layout.bytes_per_cluster(
-        parameters
-    )
+    return allocation.count_free(region, parameters) * layout.bytes_per_cluster(parameters)

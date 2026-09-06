@@ -1,7 +1,6 @@
 import os
 
-from definitions import assets
-from definitions import updates
+from definitions import assets, updates
 from filesystems.naming import shortnames
 
 ARGUMENTS = "arguments"
@@ -58,10 +57,7 @@ def contents_of(path):
 
 
 def surveyed(entries, directory, provided=NOTHING_PROVIDED):
-    return [
-        {"entry": entry, "found": located(entry, directory, provided)}
-        for entry in entries
-    ]
+    return [{"entry": entry, "found": located(entry, directory, provided)} for entry in entries]
 
 
 def present(survey):
@@ -74,9 +70,7 @@ def absent(survey):
 
 def staged_files(survey, target_directory):
     return {
-        target_directory + "/" + stored_name(wanted_file(held["entry"])): contents_of(
-            held["found"]
-        )
+        target_directory + "/" + stored_name(wanted_file(held["entry"])): contents_of(held["found"])
         for held in present(survey)
     }
 

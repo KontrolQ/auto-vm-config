@@ -14,8 +14,7 @@ SIGNATURE = 0xAA55
 def refuse_more_than_the_table_holds(table):
     if len(table) > ENTRIES_AVAILABLE:
         raise ValueError(
-            "a master boot record holds %d entries, not %d"
-            % (ENTRIES_AVAILABLE, len(table))
+            f"a master boot record holds {ENTRIES_AVAILABLE} entries, not {len(table)}"
         )
 
 

@@ -1,9 +1,6 @@
 import os
 
-from catalogue import checksums
-from catalogue import downloads
-from catalogue import queries
-from catalogue import storage
+from catalogue import checksums, downloads, queries, storage
 from definitions import updates
 
 SIZE = "sizeBytes"
@@ -72,7 +69,7 @@ def refuse_unusable_checksum(entry, record):
 
 
 def cached_name(entry):
-    return "%s-%s" % (reference_of(entry)[queries.ITEM], updates.file_of(entry))
+    return f"{reference_of(entry)[queries.ITEM]}-{updates.file_of(entry)}"
 
 
 def sized_right(path, record):
@@ -132,9 +129,7 @@ def refuse_unreadable(entry, path):
 
     discard(path)
 
-    raise LookupError(
-        TAKEN_AWAY % (queries.described(reference_of(entry)), storage.root())
-    )
+    raise LookupError(TAKEN_AWAY % (queries.described(reference_of(entry)), storage.root()))
 
 
 def fetch(entry, record, progressed):
@@ -146,9 +141,7 @@ def fetch(entry, record, progressed):
         raise LookupError(NO_ADDRESS % queries.described(reference_of(entry)))
 
     digest = checksums.digest_for(record[ALGORITHM]) if verifiable(record) else None
-    path = downloads.to_file(
-        address, storage.path_for(cached_name(entry)), progressed, digest
-    )
+    path = downloads.to_file(address, storage.path_for(cached_name(entry)), progressed, digest)
 
     refuse_mismatch(entry, digest, record, path)
     refuse_unreadable(entry, path)

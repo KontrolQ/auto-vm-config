@@ -30,16 +30,16 @@ def formatted_value(value):
 
 
 def line_for(key, value):
-    return "%s=%s" % (key, formatted_value(value))
+    return f"{key}={formatted_value(value)}"
 
 
 def heading_for(name):
-    return "[%s]" % name
+    return f"[{name}]"
 
 
 def section_lines(name, content):
     if isinstance(content, list):
-        return [heading_for(name)] + list(content)
+        return [heading_for(name), *list(content)]
 
     return [heading_for(name)] + [line_for(key, value) for key, value in content.items()]
 
@@ -48,7 +48,7 @@ def lines_of(document):
     lines = []
 
     for name, pairs in document.items():
-        lines += section_lines(name, pairs) + [""]
+        lines += [*section_lines(name, pairs), ""]
 
     return lines
 
@@ -82,10 +82,7 @@ def target_of(guest):
 
 
 def declared_sections(guest):
-    return {
-        name: dict(pairs)
-        for name, pairs in settings_of(guest).get(SECTIONS, {}).items()
-    }
+    return {name: dict(pairs) for name, pairs in settings_of(guest).get(SECTIONS, {}).items()}
 
 
 def is_placed(declaration):

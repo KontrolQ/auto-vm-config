@@ -8,9 +8,10 @@ def positions(parameters):
 
 
 def offset_of(parameters, position):
-    return layout.offset_of_sector(
-        parameters, layout.first_root_sector(parameters)
-    ) + position * entries.ENTRY_SIZE
+    return (
+        layout.offset_of_sector(parameters, layout.first_root_sector(parameters))
+        + position * entries.ENTRY_SIZE
+    )
 
 
 def slot(image, parameters, position):

@@ -1,7 +1,6 @@
-from filesystems.directories import entries
-from filesystems.fat32 import allocation
-from filesystems.fat32 import layout
 from filesystems import regions
+from filesystems.directories import entries
+from filesystems.fat32 import allocation, layout
 
 ROOT_PARENT_CLUSTER = 0
 
@@ -18,9 +17,7 @@ def slot_offset(parameters, cluster, index):
 
 
 def slot(region, parameters, cluster, index):
-    return regions.read(
-        region, slot_offset(parameters, cluster, index), entries.ENTRY_SIZE
-    )
+    return regions.read(region, slot_offset(parameters, cluster, index), entries.ENTRY_SIZE)
 
 
 def place(region, parameters, cluster, index, raw):
@@ -85,7 +82,8 @@ def first_available(region, parameters, first_cluster):
 
 def emptied(region, parameters, cluster):
     regions.fill(
-        region, layout.offset_of_cluster(parameters, cluster),
+        region,
+        layout.offset_of_cluster(parameters, cluster),
         layout.bytes_per_cluster(parameters),
     )
 
@@ -128,13 +126,17 @@ def marked_as_directory(region, parameters, cluster, parent_cluster, moment):
     emptied(region, parameters, cluster)
 
     place(
-        region, parameters, cluster, 0,
-        entries.with_raw_name(
-            entries.SELF_NAME, entries.DIRECTORY, cluster, NO_SIZE, moment
-        ),
+        region,
+        parameters,
+        cluster,
+        0,
+        entries.with_raw_name(entries.SELF_NAME, entries.DIRECTORY, cluster, NO_SIZE, moment),
     )
     place(
-        region, parameters, cluster, 1,
+        region,
+        parameters,
+        cluster,
+        1,
         entries.with_raw_name(
             entries.PARENT_NAME,
             entries.DIRECTORY,
@@ -150,7 +152,9 @@ def create(region, parameters, parent_cluster, name, moment):
 
     marked_as_directory(region, parameters, cluster, parent_cluster, moment)
     add(
-        region, parameters, parent_cluster,
+        region,
+        parameters,
+        parent_cluster,
         entries.build(name, entries.DIRECTORY, cluster, NO_SIZE, moment),
     )
 

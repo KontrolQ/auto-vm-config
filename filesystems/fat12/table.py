@@ -103,9 +103,7 @@ def linked(image, parameters, chain):
 
 def refuse_when_too_few_free(available, needed):
     if len(available) < needed:
-        raise ValueError(
-            "%d free clusters remain, %d are needed" % (len(available), needed)
-        )
+        raise ValueError(f"{len(available)} free clusters remain, {needed} are needed")
 
 
 def allocate(image, parameters, needed):

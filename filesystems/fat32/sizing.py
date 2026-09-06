@@ -39,9 +39,7 @@ def sectors_for_entries(entry_count):
 
 
 def clusters_available(partition_sectors, sectors_per_table, sectors_per_cluster):
-    data_sectors = (
-        partition_sectors - RESERVED_SECTORS - sectors_per_table * TABLES_PRESENT
-    )
+    data_sectors = partition_sectors - RESERVED_SECTORS - sectors_per_table * TABLES_PRESENT
 
     return data_sectors // sectors_per_cluster
 
@@ -72,22 +70,20 @@ def is_small_enough(cluster_count):
 def refuse_unusable_cluster_count(cluster_count):
     if not is_large_enough(cluster_count):
         raise ValueError(
-            "%d clusters is fewer than the %d a FAT32 volume needs"
-            % (cluster_count, SMALLEST_CLUSTER_COUNT)
+            f"{cluster_count} clusters is fewer than "
+            f"the {SMALLEST_CLUSTER_COUNT} a FAT32 volume needs"
         )
 
     if not is_small_enough(cluster_count):
         raise ValueError(
-            "%d clusters is more than the %d a FAT32 volume holds"
-            % (cluster_count, LARGEST_CLUSTER_COUNT)
+            f"{cluster_count} clusters is more than "
+            f"the {LARGEST_CLUSTER_COUNT} a FAT32 volume holds"
         )
 
 
 def plan_for(partition_sectors):
     sectors_per_cluster = sectors_per_cluster_for(partition_sectors)
-    sectors_per_table, cluster_count = table_size_for(
-        partition_sectors, sectors_per_cluster
-    )
+    sectors_per_table, cluster_count = table_size_for(partition_sectors, sectors_per_cluster)
 
     refuse_unusable_cluster_count(cluster_count)
 

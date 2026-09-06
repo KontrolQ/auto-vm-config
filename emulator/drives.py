@@ -28,13 +28,7 @@ AFTER_FIRST_BOOT = {
 
 
 def drive_options(path, interface, index, media):
-    return "file=%s,format=%s,if=%s,index=%d,media=%s" % (
-        path,
-        RAW,
-        interface,
-        index,
-        media,
-    )
+    return f"file={path},format={RAW},if={interface},index={index},media={media}"
 
 
 def disk_arguments(path, index):
@@ -70,8 +64,7 @@ def attached(paths):
 def refuse_unknown_boot_source(source):
     if source not in BOOT_LETTERS:
         raise ValueError(
-            "%s is not a boot source; use one of %s"
-            % (source, ", ".join(sorted(BOOT_LETTERS)))
+            "{} is not a boot source; use one of {}".format(source, ", ".join(sorted(BOOT_LETTERS)))
         )
 
 
@@ -81,6 +74,6 @@ def boot_arguments(source):
     afterwards = AFTER_FIRST_BOOT.get(source)
 
     if afterwards is None:
-        return ["-boot", "order=%s" % BOOT_LETTERS[source]]
+        return ["-boot", f"order={BOOT_LETTERS[source]}"]
 
-    return ["-boot", "once=%s,order=%s" % (BOOT_LETTERS[source], afterwards)]
+    return ["-boot", f"once={BOOT_LETTERS[source]},order={afterwards}"]

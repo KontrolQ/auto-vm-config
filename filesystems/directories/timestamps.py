@@ -19,11 +19,7 @@ HOUR_MASK = 0x1F
 
 
 def packed_date(moment):
-    return (
-        ((moment.year - EPOCH_YEAR) << YEAR_SHIFT)
-        | (moment.month << MONTH_SHIFT)
-        | moment.day
-    )
+    return ((moment.year - EPOCH_YEAR) << YEAR_SHIFT) | (moment.month << MONTH_SHIFT) | moment.day
 
 
 def packed_time(moment):

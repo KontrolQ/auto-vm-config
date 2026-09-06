@@ -2,8 +2,7 @@ import sys
 
 from disks import geometry
 from filesystems.fat32 import formatting
-from partitioning import entries
-from partitioning import record
+from partitioning import entries, record
 
 RUNNING_ON_WINDOWS = sys.platform == "win32"
 

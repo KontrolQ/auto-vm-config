@@ -1,8 +1,4 @@
-from emulator import binaries
-from emulator import devices
-from emulator import drives
-from emulator import rendering
-from emulator import sharing
+from emulator import binaries, devices, drives, rendering, sharing
 
 SHARED_FOLDER = "shared_folder"
 
@@ -26,22 +22,20 @@ def network_options_for(configuration):
 
 
 def build(configuration, paths, boot_from=DEFAULT_BOOT_SOURCE, rtc=LOCALTIME, audio_driver=None):
-    return (
-        [emulator_path()]
-        + devices.machine_arguments(configuration)
-        + devices.processor_arguments(configuration)
-        + devices.memory_arguments(configuration)
-        + devices.video_arguments(configuration)
-        + devices.sound_arguments(
-            configuration, audio_driver or devices.default_audio_driver()
-        )
-        + devices.network_arguments(configuration, network_options_for(configuration))
-        + devices.pointer_arguments(configuration)
-        + drives.attached(paths)
-        + drives.boot_arguments(boot_from)
-        + devices.clock_arguments(rtc)
-        + devices.display_arguments()
-    )
+    return [
+        emulator_path(),
+        *devices.machine_arguments(configuration),
+        *devices.processor_arguments(configuration),
+        *devices.memory_arguments(configuration),
+        *devices.video_arguments(configuration),
+        *devices.sound_arguments(configuration, audio_driver or devices.default_audio_driver()),
+        *devices.network_arguments(configuration, network_options_for(configuration)),
+        *devices.pointer_arguments(configuration),
+        *drives.attached(paths),
+        *drives.boot_arguments(boot_from),
+        *devices.clock_arguments(rtc),
+        *devices.display_arguments(),
+    ]
 
 
 def sharing_complaint(configuration):

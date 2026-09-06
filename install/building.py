@@ -2,16 +2,14 @@ import os
 
 import clock
 from definitions import assets
-from disks import creation
-from disks import geometry
+from disks import creation, geometry
 from filesystems import regions
 from filesystems.fat12 import files as floppy_files
 from filesystems.fat12 import layout as floppy_layout
 from filesystems.fat32 import files as disk_files
 from filesystems.fat32 import layout as disk_layout
 from install import answerfile
-from media.eltorito import chooser
-from media.eltorito import images
+from media.eltorito import chooser, images
 
 SYSTEM_IMAGE = "system.img"
 DATA_IMAGE = "data.img"
@@ -50,13 +48,11 @@ def bytes_for(gigabytes):
 
 
 def create_disk(path, gigabytes, label, moment, bootable):
-    return creation.create(
-        path, bytes_for(gigabytes), label, serial_from(moment), moment, bootable
-    )
+    return creation.create(path, bytes_for(gigabytes), label, serial_from(moment), moment, bootable)
 
 
 def opened_volume(path, first_partition_sector):
-    handle = open(path, "r+b")
+    handle = open(path, "r+b")  # noqa: SIM115 - the caller closes it in a finally
 
     return handle, regions.on(handle, geometry.offset_of_sector(first_partition_sector))
 
@@ -142,7 +138,7 @@ def planned_steps(configuration):
     if wants_a_data_disk(configuration):
         captions.append("creating the second disk")
 
-    return captions + ["preparing the boot floppy"]
+    return [*captions, "preparing the boot floppy"]
 
 
 def noted(watcher, caption):
@@ -170,9 +166,7 @@ def build(
     noted(watcher, "creating the system disk")
 
     system_path = image_path(directory, SYSTEM_IMAGE)
-    system = create_disk(
-        system_path, configuration[SYSTEM_DISK_KEY], SYSTEM_LABEL, moment, True
-    )
+    system = create_disk(system_path, configuration[SYSTEM_DISK_KEY], SYSTEM_LABEL, moment, True)
 
     noted(watcher, "writing the answer file")
 
@@ -189,9 +183,7 @@ def build(
 
         data_path = image_path(directory, DATA_IMAGE)
 
-        create_disk(
-            data_path, configuration[DATA_DISK_KEY], DATA_LABEL, moment, False
-        )
+        create_disk(data_path, configuration[DATA_DISK_KEY], DATA_LABEL, moment, False)
         built["data_disk"] = data_path
 
     noted(watcher, "preparing the boot floppy")
@@ -203,9 +195,7 @@ def build(
 
         with open(floppy_path_out, "wb") as handle:
             handle.write(
-                stage_onto_floppy(
-                    image, floppy_staging(identifier, guest, answers_content)
-                )
+                stage_onto_floppy(image, floppy_staging(identifier, guest, answers_content))
             )
 
         built["floppy"] = floppy_path_out

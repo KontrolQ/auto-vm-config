@@ -1,8 +1,7 @@
+from cli_widgets.widgets import checklist, choice, entry
+
 from definitions import updates
 from install import validation
-from cli_widgets.widgets import checklist
-from cli_widgets.widgets import choice
-from cli_widgets.widgets import entry
 
 KEY = "key"
 QUESTION = "question"
@@ -118,9 +117,7 @@ def ask_entry(declaration, validator=None):
 
 
 def refuse_unknown_kind(declaration):
-    raise ValueError(
-        "%s is not a kind of question" % kind_of(declaration)
-    )
+    raise ValueError(f"{kind_of(declaration)} is not a kind of question")
 
 
 def ask(declaration):

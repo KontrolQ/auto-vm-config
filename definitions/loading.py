@@ -30,9 +30,7 @@ def document_path(identifier, name):
 
 
 def is_a_guest(directory):
-    return os.path.isfile(
-        os.path.join(directory, GUEST_DOCUMENT + DOCUMENT_SUFFIX)
-    )
+    return os.path.isfile(os.path.join(directory, GUEST_DOCUMENT + DOCUMENT_SUFFIX))
 
 
 def available():
@@ -41,16 +39,15 @@ def available():
     if not os.path.isdir(root):
         return []
 
-    return sorted(
-        name for name in os.listdir(root) if is_a_guest(os.path.join(root, name))
-    )
+    return sorted(name for name in os.listdir(root) if is_a_guest(os.path.join(root, name)))
 
 
 def refuse_unknown_guest(identifier):
     if identifier not in available():
         raise FileNotFoundError(
-            "%s is not a guest; available guests are %s"
-            % (identifier, ", ".join(available()) or "none")
+            "{} is not a guest; available guests are {}".format(
+                identifier, ", ".join(available()) or "none"
+            )
         )
 
 
@@ -71,8 +68,7 @@ def document_names(identifier):
 
 def documents_of(identifier):
     return {
-        name: read_document(document_path(identifier, name))
-        for name in document_names(identifier)
+        name: read_document(document_path(identifier, name)) for name in document_names(identifier)
     }
 
 
@@ -91,7 +87,7 @@ def handler_of(identifier):
     import importlib.util
 
     specification = importlib.util.spec_from_file_location(
-        "%s.%s" % (identifier, HANDLER_MODULE), handler_path(identifier)
+        f"{identifier}.{HANDLER_MODULE}", handler_path(identifier)
     )
     module = importlib.util.module_from_spec(specification)
     specification.loader.exec_module(module)

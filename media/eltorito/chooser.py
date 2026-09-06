@@ -1,5 +1,4 @@
-from filesystems.fat12 import files
-from filesystems.fat12 import layout
+from filesystems.fat12 import files, layout
 
 LOADER = "JO.SYS"
 

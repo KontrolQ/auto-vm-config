@@ -1,5 +1,5 @@
-from filesystems.fat32 import bootsector
 from filesystems import regions
+from filesystems.fat32 import bootsector
 
 FIRST_DATA_CLUSTER = 2
 

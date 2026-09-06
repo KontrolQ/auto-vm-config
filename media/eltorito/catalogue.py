@@ -64,7 +64,7 @@ def initial_entry(raw):
 
 
 def checksum_of(entry):
-    words = struct.unpack_from("<%dH" % CHECKSUM_WORDS, entry, 0)
+    words = struct.unpack_from(f"<{CHECKSUM_WORDS}H", entry, 0)
 
     return sum(words) % CHECKSUM_MODULUS
 

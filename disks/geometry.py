@@ -25,6 +25,5 @@ def sectors_available_after_the_record(total_sectors):
 def refuse_when_unaligned(total_bytes):
     if total_bytes % BYTES_PER_SECTOR:
         raise ValueError(
-            "%d bytes is not a whole number of %d byte sectors"
-            % (total_bytes, BYTES_PER_SECTOR)
+            f"{total_bytes} bytes is not a whole number of {BYTES_PER_SECTOR} byte sectors"
         )

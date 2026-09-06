@@ -78,9 +78,7 @@ def ordered(entries):
 
 
 def offered(document, configuration):
-    return [
-        entry for entry in ordered(entries_in(document)) if not is_required(entry)
-    ]
+    return [entry for entry in ordered(entries_in(document)) if not is_required(entry)]
 
 
 def always_taken(document):
@@ -100,9 +98,7 @@ def by_identifier(document):
 
 
 def missing_requirements(entry, chosen):
-    return [
-        wanted for wanted in requirements_of(entry) if wanted not in chosen
-    ]
+    return [wanted for wanted in requirements_of(entry) if wanted not in chosen]
 
 
 def met_conflicts(entry, chosen):
@@ -116,11 +112,13 @@ def complaints_about(document, chosen):
     for identifier in chosen:
         entry = known[identifier]
 
-        for wanted in missing_requirements(entry, chosen):
-            found.append("%s needs %s" % (identifier, wanted))
-
-        for unwanted in met_conflicts(entry, chosen):
-            found.append("%s cannot be installed beside %s" % (identifier, unwanted))
+        found.extend(
+            f"{identifier} needs {wanted}" for wanted in missing_requirements(entry, chosen)
+        )
+        found.extend(
+            f"{identifier} cannot be installed beside {unwanted}"
+            for unwanted in met_conflicts(entry, chosen)
+        )
 
     return found
 
@@ -141,7 +139,6 @@ def with_requirements(document, chosen):
 
 
 def sequence_for(document, chosen):
-    known = by_identifier(document)
     wanted = set(with_requirements(document, chosen))
 
     return [

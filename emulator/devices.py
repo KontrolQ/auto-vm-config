@@ -50,7 +50,7 @@ def machine_arguments(configuration):
     if configuration.get(POWER_MANAGEMENT, APM) == ACPI:
         return ["-machine", MACHINE]
 
-    return ["-machine", "%s,%s=off" % (MACHINE, ACPI)]
+    return ["-machine", f"{MACHINE},{ACPI}=off"]
 
 
 def processor_arguments(configuration):
@@ -73,14 +73,14 @@ def sound_arguments(configuration, audio_driver):
 
     return [
         "-audiodev",
-        "%s,id=%s" % (audio_driver, AUDIO_BACKEND),
+        f"{audio_driver},id={AUDIO_BACKEND}",
         "-device",
-        "%s,audiodev=%s" % (SOUND_DEVICES[chosen], AUDIO_BACKEND),
+        f"{SOUND_DEVICES[chosen]},audiodev={AUDIO_BACKEND}",
     ]
 
 
 def backend_options(extra_options):
-    return ",".join(["user", "id=%s" % NETWORK_BACKEND] + list(extra_options))
+    return ",".join(["user", f"id={NETWORK_BACKEND}", *list(extra_options)])
 
 
 def network_arguments(configuration, extra_options=()):
@@ -93,16 +93,16 @@ def network_arguments(configuration, extra_options=()):
         "-netdev",
         backend_options(extra_options),
         "-device",
-        "%s,netdev=%s" % (chosen, NETWORK_BACKEND),
+        f"{chosen},netdev={NETWORK_BACKEND}",
     ]
 
 
 def clock_arguments(rtc):
-    return ["-rtc", "base=%s" % rtc]
+    return ["-rtc", f"base={rtc}"]
 
 
 def display_arguments():
-    return ["-display", "%s,grab-mod=%s" % (DISPLAY_BACKEND, GRAB_MODIFIER)]
+    return ["-display", f"{DISPLAY_BACKEND},grab-mod={GRAB_MODIFIER}"]
 
 
 def pointer_arguments(configuration):

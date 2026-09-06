@@ -1,6 +1,5 @@
 from media.eltorito import catalogue
-from media.iso9660 import descriptors
-from media.iso9660 import sectors
+from media.iso9660 import descriptors, sectors
 
 SPECIFICATION = "EL TORITO SPECIFICATION"
 
@@ -50,11 +49,7 @@ def carries_a_boot_image(handle):
 def carries_a_boot_floppy(handle):
     entry = entry_on(handle)
 
-    return (
-        entry is not None
-        and catalogue.is_bootable(entry)
-        and catalogue.is_a_floppy(entry)
-    )
+    return entry is not None and catalogue.is_bootable(entry) and catalogue.is_a_floppy(entry)
 
 
 def refuse_when_absent(entry):
@@ -67,6 +62,4 @@ def extracted(handle):
 
     refuse_when_absent(entry)
 
-    return sectors.span(
-        handle, catalogue.load_block_of(entry), catalogue.size_of(entry)
-    )
+    return sectors.span(handle, catalogue.load_block_of(entry), catalogue.size_of(entry))

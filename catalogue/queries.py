@@ -34,11 +34,7 @@ query Held($slug: String!) {
 
 
 def described(reference):
-    return "%s %s %s" % (
-        reference[SOFTWARE],
-        reference[VERSION],
-        reference[ITEM],
-    )
+    return f"{reference[SOFTWARE]} {reference[VERSION]} {reference[ITEM]}"
 
 
 def sent(query, variables):
@@ -69,7 +65,7 @@ def software_in(held, reference):
     found = (held.get("data") or {}).get("Software")
 
     if found is None:
-        raise LookupError("the catalogue holds nothing called %s" % reference[SOFTWARE])
+        raise LookupError(f"the catalogue holds nothing called {reference[SOFTWARE]}")
 
     return found
 
@@ -78,9 +74,7 @@ def version_in(software, reference):
     found = named(software["versions"], reference[VERSION])
 
     if found is None:
-        raise LookupError(
-            "%s has no version %s" % (reference[SOFTWARE], reference[VERSION])
-        )
+        raise LookupError(f"{reference[SOFTWARE]} has no version {reference[VERSION]}")
 
     return found
 
@@ -89,7 +83,7 @@ def file_in(version, reference):
     found = named(version["files"], reference[ITEM])
 
     if found is None:
-        raise LookupError("%s holds no file called %s" % (described(reference), reference[ITEM]))
+        raise LookupError(f"{described(reference)} holds no file called {reference[ITEM]}")
 
     return found
 

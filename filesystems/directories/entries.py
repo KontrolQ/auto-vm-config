@@ -48,9 +48,7 @@ def joined_halves(high, low):
 
 
 def build(name, attributes, first_cluster, size, moment):
-    return with_raw_name(
-        shortnames.packed(name), attributes, first_cluster, size, moment
-    )
+    return with_raw_name(shortnames.packed(name), attributes, first_cluster, size, moment)
 
 
 def with_raw_name(raw_name, attributes, first_cluster, size, moment):
@@ -60,21 +58,11 @@ def with_raw_name(raw_name, attributes, first_cluster, size, moment):
     entry[ATTRIBUTES_OFFSET] = attributes
     entry[FINE_RESOLUTION_OFFSET] = timestamps.packed_fine_resolution(moment)
 
-    struct.pack_into(
-        "<H", entry, CREATED_TIME_OFFSET, timestamps.packed_time(moment)
-    )
-    struct.pack_into(
-        "<H", entry, CREATED_DATE_OFFSET, timestamps.packed_date(moment)
-    )
-    struct.pack_into(
-        "<H", entry, ACCESSED_DATE_OFFSET, timestamps.packed_date(moment)
-    )
-    struct.pack_into(
-        "<H", entry, MODIFIED_TIME_OFFSET, timestamps.packed_time(moment)
-    )
-    struct.pack_into(
-        "<H", entry, MODIFIED_DATE_OFFSET, timestamps.packed_date(moment)
-    )
+    struct.pack_into("<H", entry, CREATED_TIME_OFFSET, timestamps.packed_time(moment))
+    struct.pack_into("<H", entry, CREATED_DATE_OFFSET, timestamps.packed_date(moment))
+    struct.pack_into("<H", entry, ACCESSED_DATE_OFFSET, timestamps.packed_date(moment))
+    struct.pack_into("<H", entry, MODIFIED_TIME_OFFSET, timestamps.packed_time(moment))
+    struct.pack_into("<H", entry, MODIFIED_DATE_OFFSET, timestamps.packed_date(moment))
 
     struct.pack_into("<H", entry, CLUSTER_HIGH_OFFSET, high_half_of(first_cluster))
     struct.pack_into("<H", entry, CLUSTER_LOW_OFFSET, low_half_of(first_cluster))

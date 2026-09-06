@@ -1,29 +1,14 @@
 import os
 import sys
 
+from cli_widgets.rendering import frames, styling
+from cli_widgets.widgets import browser, choice, confirm, progress, prompting, summary
+
 import clock
-from catalogue import addresses
-from catalogue import gathering
-from definitions import loading
-from definitions import updates
-from emulator import commands
-from emulator import devices
-from emulator import drives
-from emulator import launcher
-from emulator import sharing
-from install import answerfile
-from install import asking
-from install import building
-from install import media
-from install import staging
-from cli_widgets.rendering import frames
-from cli_widgets.rendering import styling
-from cli_widgets.widgets import browser
-from cli_widgets.widgets import choice
-from cli_widgets.widgets import confirm
-from cli_widgets.widgets import progress
-from cli_widgets.widgets import prompting
-from cli_widgets.widgets import summary
+from catalogue import addresses, gathering
+from definitions import loading, updates
+from emulator import commands, devices, drives, launcher, sharing
+from install import answerfile, asking, building, media, staging
 
 GUEST_DOCUMENT = "guest"
 HARDWARE_DOCUMENT = "hardware"
@@ -89,9 +74,7 @@ def choose_guest():
     if not available:
         raise FileNotFoundError("no guests are defined")
 
-    return choice.ask("What should be installed", guest_options(available))[
-        asking.VALUE
-    ]
+    return choice.ask("What should be installed", guest_options(available))[asking.VALUE]
 
 
 def ask_machine_name(identifier):
@@ -120,7 +103,7 @@ def may_overwrite(directory):
         return True
 
     announce("")
-    announce(styling.warning("  %s already holds files" % directory))
+    announce(styling.warning(f"  {directory} already holds files"))
 
     return confirm.ask("Overwrite what is there", False)
 
@@ -156,7 +139,7 @@ def summary_rows(identifier, name, directory, disc_path, configuration, answers,
 
     rows += [(key.replace("_", " ").capitalize(), value) for key, value in configuration.items()]
     rows += [(key.replace("_", " ").capitalize(), value or "-") for key, value in answers.items()]
-    rows += [("Clock", "host, %s" % clock.described_offset())]
+    rows += [("Clock", f"host, {clock.described_offset()}")]
     rows += [("Updates chosen", len(chosen))]
 
     return rows
@@ -173,8 +156,7 @@ def sequence_lines(catalogue, chosen):
         return []
 
     return ["", styling.bold(styling.underlined("Update order"))] + [
-        "  %2d. %s" % (position, name)
-        for position, name in enumerate(ordered, start=1)
+        f"  {position:2d}. {name}" for position, name in enumerate(ordered, start=1)
     ]
 
 
@@ -184,7 +166,9 @@ def report_built(built):
     announce("")
 
     for name, path in built.items():
-        announce("  %-14s %s" % (name.replace("_", " "), path))
+        readable = name.replace("_", " ")
+
+        announce(f"  {readable:<14} {path}")
 
 
 def guest_updates(guest):
@@ -219,9 +203,7 @@ def answer_extra(guest, survey):
 
 def running_paths(built):
     return {
-        name: path
-        for name, path in built.items()
-        if name in (drives.SYSTEM_DISK, drives.DATA_DISK)
+        name: path for name, path in built.items() if name in (drives.SYSTEM_DISK, drives.DATA_DISK)
     }
 
 
@@ -229,17 +211,17 @@ def report_scripts(scripts, configuration):
     announce("")
     announce(styling.bold(styling.underlined("To launch")))
     announce("")
-    announce("  %s %s" % (scripts[launcher.RUN_SCRIPT], launcher.INSTALL_ARGUMENT))
+    announce(f"  {scripts[launcher.RUN_SCRIPT]} {launcher.INSTALL_ARGUMENT}")
     announce(styling.muted("      installs Windows, once"))
     announce("")
-    announce("  %s" % scripts[launcher.RUN_SCRIPT])
+    announce(f"  {scripts[launcher.RUN_SCRIPT]}")
     announce(styling.muted("      starts the machine, every time after that"))
 
     if configuration.get(devices.POINTER) == devices.TABLET:
         return
 
     announce("")
-    announce(styling.muted("  %s releases the mouse" % devices.GRAB_RELEASE))
+    announce(styling.muted(f"  {devices.GRAB_RELEASE} releases the mouse"))
 
 
 def ask_updates_folder(wanted):
@@ -247,7 +229,7 @@ def ask_updates_folder(wanted):
         return ""
 
     heading("Update installers")
-    remark("%d of the updates chosen are not in the catalogue" % len(wanted))
+    remark(f"{len(wanted)} of the updates chosen are not in the catalogue")
     remark("they install only if you already have their installer files")
 
     if not confirm.ask("Do you have the installer files", False):
@@ -286,13 +268,13 @@ def fetch_one(entry, record):
 
 def report_fetched(entry, record, held):
     if gathering.verifiable(record):
-        announce(styling.success("  %s %s" % (entry["name"], held)))
+        announce(styling.success("  {} {}".format(entry["name"], held)))
 
         return
 
     announce(
         styling.warning(
-            "  %s carries no published checksum and was taken as it came" % entry["name"]
+            "  {} carries no published checksum and was taken as it came".format(entry["name"])
         )
     )
 
@@ -317,9 +299,7 @@ def fetch_updates(wanted):
     announce(styling.bold(styling.underlined("Downloads")))
     announce("")
     announce(
-        styling.muted(
-            "  installers come from %s and are kept for the next build" % addresses.SITE
-        )
+        styling.muted(f"  installers come from {addresses.SITE} and are kept for the next build")
     )
     announce("")
 
@@ -329,9 +309,7 @@ def fetch_updates(wanted):
         try:
             held[updates.identifier_of(entry)] = fetch_update(entry)
         except FETCH_TROUBLE as refused:
-            announce(
-                styling.warning("  %s was not installed: %s" % (entry["name"], refused))
-            )
+            announce(styling.warning("  {} was not installed: {}".format(entry["name"], refused)))
 
     return held
 
@@ -342,42 +320,28 @@ def report_survey(survey, target):
     announce("")
 
     for held in staging.present(survey):
-        announce(
-            "  %s %-40s %s"
-            % (
-                styling.success("will install"),
-                held["entry"]["name"],
-                styling.muted(held["entry"].get("file", "")),
-            )
-        )
+        named = held["entry"]["name"]
+        held_file = styling.muted(held["entry"].get("file", ""))
+
+        announce(f"  {styling.success('will install')} {named:<40} {held_file}")
 
     for held in staging.absent(survey):
-        announce(
-            "  %s %-40s %s"
-            % (
-                styling.warning("skipped".ljust(len("will install"))),
-                held["entry"]["name"],
-                styling.muted(
-                    "%s not found" % held["entry"].get("file", "its installer")
-                ),
-            )
-        )
+        named = held["entry"]["name"]
+        wanted_name = held["entry"].get("file", "its installer")
+        notice = styling.muted(f"{wanted_name} not found")
+        label = styling.warning("skipped".ljust(len("will install")))
+
+        announce(f"  {label} {named:<40} {notice}")
 
     if gathering.uncatalogued([held["entry"] for held in staging.absent(survey)]):
         announce("")
         announce(
-            styling.muted(
-                "  skipped updates need their installer put in the folder you point at"
-            )
+            styling.muted("  skipped updates need their installer put in the folder you point at")
         )
 
     if staging.present(survey):
         announce("")
-        announce(
-            styling.muted(
-                "  copied to %s and run when Windows first starts" % target
-            )
-        )
+        announce(styling.muted(f"  copied to {target} and run when Windows first starts"))
 
 
 def configured():
@@ -418,9 +382,7 @@ def configured():
 
     summary.show(
         TITLE,
-        summary_rows(
-            identifier, name, directory, disc_path, configuration, answers, chosen
-        ),
+        summary_rows(identifier, name, directory, disc_path, configuration, answers, chosen),
     )
 
     for line in sequence_lines(catalogue, chosen):
@@ -469,9 +431,7 @@ def configured():
     report_built(built)
 
     install_command = commands.build(configuration, built, boot_from="floppy")
-    run_command = commands.build(
-        configuration, running_paths(built), boot_from=drives.SYSTEM_DISK
-    )
+    run_command = commands.build(configuration, running_paths(built), boot_from=drives.SYSTEM_DISK)
     scripts = launcher.scripts_for(directory, install_command, run_command)
 
     report_scripts(scripts, configuration)
@@ -479,11 +439,10 @@ def configured():
     announce("")
 
     if not confirm.ask("Start the installation now"):
+        where = scripts[launcher.RUN_SCRIPT]
+
         announce(
-            styling.muted(
-                "  nothing started; run %s %s when ready"
-                % (scripts[launcher.RUN_SCRIPT], launcher.INSTALL_ARGUMENT)
-            )
+            styling.muted(f"  nothing started; run {where} {launcher.INSTALL_ARGUMENT} when ready")
         )
 
         return 0

@@ -20,32 +20,18 @@ FIRST_DATA_CLUSTER = 2
 
 def parameters(image):
     return {
-        "bytes_per_sector": struct.unpack_from(
-            "<H", image, BYTES_PER_SECTOR_OFFSET
-        )[0],
+        "bytes_per_sector": struct.unpack_from("<H", image, BYTES_PER_SECTOR_OFFSET)[0],
         "sectors_per_cluster": image[SECTORS_PER_CLUSTER_OFFSET],
-        "reserved_sectors": struct.unpack_from(
-            "<H", image, RESERVED_SECTORS_OFFSET
-        )[0],
+        "reserved_sectors": struct.unpack_from("<H", image, RESERVED_SECTORS_OFFSET)[0],
         "tables_present": image[TABLES_PRESENT_OFFSET],
         "root_entries": struct.unpack_from("<H", image, ROOT_ENTRIES_OFFSET)[0],
-        "small_total_sectors": struct.unpack_from(
-            "<H", image, SMALL_TOTAL_SECTORS_OFFSET
-        )[0],
+        "small_total_sectors": struct.unpack_from("<H", image, SMALL_TOTAL_SECTORS_OFFSET)[0],
         "media_descriptor": image[MEDIA_DESCRIPTOR_OFFSET],
-        "sectors_per_table": struct.unpack_from(
-            "<H", image, SECTORS_PER_TABLE_OFFSET
-        )[0],
-        "sectors_per_track": struct.unpack_from(
-            "<H", image, SECTORS_PER_TRACK_OFFSET
-        )[0],
-        "heads_per_cylinder": struct.unpack_from(
-            "<H", image, HEADS_PER_CYLINDER_OFFSET
-        )[0],
+        "sectors_per_table": struct.unpack_from("<H", image, SECTORS_PER_TABLE_OFFSET)[0],
+        "sectors_per_track": struct.unpack_from("<H", image, SECTORS_PER_TRACK_OFFSET)[0],
+        "heads_per_cylinder": struct.unpack_from("<H", image, HEADS_PER_CYLINDER_OFFSET)[0],
         "hidden_sectors": struct.unpack_from("<I", image, HIDDEN_SECTORS_OFFSET)[0],
-        "large_total_sectors": struct.unpack_from(
-            "<I", image, LARGE_TOTAL_SECTORS_OFFSET
-        )[0],
+        "large_total_sectors": struct.unpack_from("<I", image, LARGE_TOTAL_SECTORS_OFFSET)[0],
     }
 
 
@@ -64,9 +50,7 @@ def first_table_sector(parameters):
 def root_sectors(parameters):
     occupied_bytes = parameters["root_entries"] * entries.ENTRY_SIZE
 
-    return (occupied_bytes + parameters["bytes_per_sector"] - 1) // parameters[
-        "bytes_per_sector"
-    ]
+    return (occupied_bytes + parameters["bytes_per_sector"] - 1) // parameters["bytes_per_sector"]
 
 
 def first_root_sector(parameters):

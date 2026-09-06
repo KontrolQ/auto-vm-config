@@ -31,9 +31,7 @@ def read(sector):
     return {
         "free_clusters": struct.unpack_from("<I", sector, FREE_COUNT_OFFSET)[0],
         "next_free_cluster": struct.unpack_from("<I", sector, NEXT_FREE_OFFSET)[0],
-        "signed": struct.unpack_from("<I", sector, LEADING_OFFSET)[0]
-        == LEADING_SIGNATURE
-        and struct.unpack_from("<I", sector, STRUCTURE_OFFSET)[0]
-        == STRUCTURE_SIGNATURE
+        "signed": struct.unpack_from("<I", sector, LEADING_OFFSET)[0] == LEADING_SIGNATURE
+        and struct.unpack_from("<I", sector, STRUCTURE_OFFSET)[0] == STRUCTURE_SIGNATURE
         and struct.unpack_from("<I", sector, TRAILING_OFFSET)[0] == TRAILING_SIGNATURE,
     }

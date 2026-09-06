@@ -1,7 +1,5 @@
 from filesystems.directories import entries
-from filesystems.fat12 import layout
-from filesystems.fat12 import root
-from filesystems.fat12 import table
+from filesystems.fat12 import layout, root, table
 
 NO_FIRST_CLUSTER = 0
 
@@ -45,16 +43,14 @@ def place_content(image, parameters, chain, content):
 
 
 def read_content(image, parameters, chain, size):
-    gathered = b"".join(
-        read_cluster(image, parameters, cluster) for cluster in chain
-    )
+    gathered = b"".join(read_cluster(image, parameters, cluster) for cluster in chain)
 
     return gathered[:size]
 
 
 def refuse_when_missing(position, name):
     if position is None:
-        raise FileNotFoundError("%s is not in the root directory" % name)
+        raise FileNotFoundError(f"{name} is not in the root directory")
 
 
 def details_at(image, parameters, position):
@@ -89,9 +85,7 @@ def write(image, parameters, name, content, moment):
     chain = table.allocate(image, parameters, clusters_needed(parameters, len(content)))
     place_content(image, parameters, chain, content)
 
-    raw = entries.build(
-        name, entries.ARCHIVE, first_cluster_of(chain), len(content), moment
-    )
+    raw = entries.build(name, entries.ARCHIVE, first_cluster_of(chain), len(content), moment)
 
     if replacing is not None:
         root.place(image, parameters, replacing, raw)
@@ -109,6 +103,4 @@ def remove(image, parameters, name):
 
 
 def free_space(image, parameters):
-    return len(table.free_clusters(image, parameters)) * layout.bytes_per_cluster(
-        parameters
-    )
+    return len(table.free_clusters(image, parameters)) * layout.bytes_per_cluster(parameters)

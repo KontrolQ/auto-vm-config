@@ -36,8 +36,7 @@ BOOT_CATALOGUE_OFFSET = 71
 def is_a_descriptor(raw):
     return (
         len(raw) >= sectors.SECTOR_SIZE
-        and raw[IDENTIFIER_OFFSET : IDENTIFIER_OFFSET + IDENTIFIER_LENGTH]
-        == STANDARD_IDENTIFIER
+        and raw[IDENTIFIER_OFFSET : IDENTIFIER_OFFSET + IDENTIFIER_LENGTH] == STANDARD_IDENTIFIER
     )
 
 
@@ -110,9 +109,7 @@ def root_record(raw):
 
 
 def boot_system_identifier(raw):
-    return text_at(
-        raw, BOOT_SYSTEM_IDENTIFIER_OFFSET, BOOT_SYSTEM_IDENTIFIER_LENGTH
-    )
+    return text_at(raw, BOOT_SYSTEM_IDENTIFIER_OFFSET, BOOT_SYSTEM_IDENTIFIER_LENGTH)
 
 
 def boot_catalogue_block(raw):

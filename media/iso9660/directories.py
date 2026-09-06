@@ -1,5 +1,4 @@
-from media.iso9660 import records
-from media.iso9660 import sectors
+from media.iso9660 import records, sectors
 
 SEPARATORS = "/\\"
 
@@ -35,16 +34,12 @@ def records_in(extent):
 
 
 def extent_of(handle, record):
-    return sectors.span(
-        handle, records.extent_of(record), records.data_length_of(record)
-    )
+    return sectors.span(handle, records.extent_of(record), records.data_length_of(record))
 
 
 def children_of(handle, record):
     return [
-        child
-        for child in records_in(extent_of(handle, record))
-        if not records.is_special(child)
+        child for child in records_in(extent_of(handle, record)) if not records.is_special(child)
     ]
 
 

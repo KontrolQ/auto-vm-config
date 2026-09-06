@@ -33,12 +33,10 @@ def sign_of(minutes):
 
 
 def formatted_offset(minutes):
-    return "%s%s%02d:%02d" % (
-        PREFIX,
-        sign_of(minutes),
-        abs(minutes) // MINUTES_PER_HOUR,
-        abs(minutes) % MINUTES_PER_HOUR,
-    )
+    hours = abs(minutes) // MINUTES_PER_HOUR
+    rest = abs(minutes) % MINUTES_PER_HOUR
+
+    return f"{PREFIX}{sign_of(minutes)}{hours:02d}:{rest:02d}"
 
 
 def described_offset():

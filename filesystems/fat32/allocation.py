@@ -1,10 +1,7 @@
 import struct
 
-from filesystems.fat32 import bootsector
-from filesystems.fat32 import information
-from filesystems.fat32 import layout
-from filesystems.fat32 import table
 from filesystems import regions
+from filesystems.fat32 import bootsector, information, layout, table
 
 BYTES_PER_ENTRY = 4
 
@@ -51,7 +48,7 @@ def chain_from(region, parameters, first_cluster):
 def entries_in(raw):
     count = len(raw) // BYTES_PER_ENTRY
 
-    return struct.unpack("<%dI" % count, raw[: count * BYTES_PER_ENTRY])
+    return struct.unpack(f"<{count}I", raw[: count * BYTES_PER_ENTRY])
 
 
 def clusters_per_chunk(parameters):
@@ -65,9 +62,7 @@ def gather_free_between(region, parameters, first, final, needed, found):
 
     while cluster <= final and len(found) < needed:
         wanted = min(stride, final - cluster + 1)
-        raw = regions.read(
-            region, base + cluster * BYTES_PER_ENTRY, wanted * BYTES_PER_ENTRY
-        )
+        raw = regions.read(region, base + cluster * BYTES_PER_ENTRY, wanted * BYTES_PER_ENTRY)
 
         for position, value in enumerate(entries_in(raw)):
             if table.masked(value) == table.FREE:
@@ -89,9 +84,7 @@ def free_clusters(region, parameters, needed, hint):
     found = gather_free_between(region, parameters, begin, final, needed, [])
 
     if len(found) < needed:
-        found = gather_free_between(
-            region, parameters, first, begin - 1, needed, found
-        )
+        found = gather_free_between(region, parameters, first, begin - 1, needed, found)
 
     return found
 
@@ -120,9 +113,7 @@ def read_information(region, parameters):
 
 
 def write_information(region, parameters, free_count, next_free):
-    regions.write(
-        region, information_offset(parameters), information.build(free_count, next_free)
-    )
+    regions.write(region, information_offset(parameters), information.build(free_count, next_free))
 
 
 def allocation_hint(region, parameters):
@@ -136,9 +127,7 @@ def allocation_hint(region, parameters):
 
 def refuse_when_too_few_free(found, needed):
     if len(found) < needed:
-        raise ValueError(
-            "%d free clusters remain, %d are needed" % (len(found), needed)
-        )
+        raise ValueError(f"{len(found)} free clusters remain, {needed} are needed")
 
 
 def linked(region, parameters, chain):
@@ -164,9 +153,7 @@ def allocate(region, parameters, needed):
     if needed == 0:
         return []
 
-    found = free_clusters(
-        region, parameters, needed, allocation_hint(region, parameters)
-    )
+    found = free_clusters(region, parameters, needed, allocation_hint(region, parameters))
 
     refuse_when_too_few_free(found, needed)
     linked(region, parameters, found)
@@ -192,8 +179,6 @@ def release(region, parameters, first_cluster):
 
     if chain:
         held = read_information(region, parameters)
-        write_information(
-            region, parameters, held["free_clusters"] + len(chain), chain[0]
-        )
+        write_information(region, parameters, held["free_clusters"] + len(chain), chain[0])
 
     return chain

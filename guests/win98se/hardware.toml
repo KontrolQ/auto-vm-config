@@ -2,12 +2,12 @@
 key = "processor"
 question = "Processor"
 kind = "choice"
-default = "pentium3"
+default = "pentium"
 
 [[group.options]]
 value = "pentium3"
 label = "Pentium III"
-note = "MMX and SSE"
+note = "MMX and SSE, but setup faults part way through"
 
 [[group.options]]
 value = "pentium2"
@@ -17,7 +17,7 @@ note = "MMX"
 [[group.options]]
 value = "pentium"
 label = "Pentium"
-note = "no MMX"
+note = "no MMX, and the only one setup finishes on"
 
 [[group.options]]
 value = "486"

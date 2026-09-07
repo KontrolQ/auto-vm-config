@@ -5,15 +5,13 @@ from cli_widgets.rendering import frames, styling
 from cli_widgets.widgets import browser, choice, confirm, progress, prompting, summary
 
 import clock
-from catalogue import addresses, gathering
-from definitions import loading, updates, zones
+from definitions import loading, zones
 from emulator import commands, devices, drives, launcher, sharing
-from install import answerfile, asking, building, media, staging
+from install import answerfile, asking, building, media
 
 GUEST_DOCUMENT = "guest"
 HARDWARE_DOCUMENT = "hardware"
 QUESTIONS_DOCUMENT = "questions"
-UPDATES_DOCUMENT = "updates"
 ZONES_DOCUMENT = "timezones"
 
 TIME_ZONE_QUESTION = "time_zone"
@@ -25,11 +23,6 @@ SHARED_FOLDER = "shared_folder"
 
 NAME_PATTERN = "^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$"
 NAME_LIMIT = 32
-
-FETCH_TROUBLE = (OSError, LookupError, ValueError)
-
-NOTHING_SHOWN = -1
-EMPTY_BAR = 1
 
 
 TITLE = "Ready to build"
@@ -151,7 +144,7 @@ def report_sharing():
     remark("files can be placed on the second disk instead")
 
 
-def summary_rows(identifier, name, directory, disc_path, configuration, answers, chosen):
+def summary_rows(identifier, name, directory, disc_path, configuration, answers):
     rows = [
         ("Guest", identifier),
         ("Machine", name),
@@ -162,24 +155,8 @@ def summary_rows(identifier, name, directory, disc_path, configuration, answers,
     rows += [(key.replace("_", " ").capitalize(), value) for key, value in configuration.items()]
     rows += [(key.replace("_", " ").capitalize(), value or "-") for key, value in answers.items()]
     rows += [("Clock", f"host, {clock.described_offset()}")]
-    rows += [("Updates chosen", len(chosen))]
 
     return rows
-
-
-def install_sequence(catalogue, chosen):
-    return [held["name"] for held in updates.sequence_for(catalogue, chosen)]
-
-
-def sequence_lines(catalogue, chosen):
-    ordered = install_sequence(catalogue, chosen)
-
-    if not ordered:
-        return []
-
-    return ["", styling.bold(styling.underlined("Update order"))] + [
-        f"  {position:2d}. {name}" for position, name in enumerate(ordered, start=1)
-    ]
 
 
 def report_built(built):
@@ -191,36 +168,6 @@ def report_built(built):
         readable = name.replace("_", " ")
 
         announce(f"  {readable:<14} {path}")
-
-
-def guest_updates(guest):
-    return guest.get("updates", {})
-
-
-def staged_files(identifier, guest, survey):
-    if not staging.present(survey):
-        return {}
-
-    settings = guest_updates(guest)
-    inside = settings["directory"].split("\\")[-1]
-
-    staged = staging.staged_files(survey, inside)
-    staged[inside + "/" + settings["runner"]] = staging.runner_for(
-        identifier,
-        survey,
-        settings["directory"],
-        settings["runner_asset"],
-        settings["step_asset"],
-    )
-
-    return staged
-
-
-def answer_extra(guest, survey):
-    if not staging.present(survey):
-        return None
-
-    return guest_updates(guest).get("answer_lines")
 
 
 def running_paths(built):
@@ -246,126 +193,6 @@ def report_scripts(scripts, configuration):
     announce(styling.muted(f"  {devices.GRAB_RELEASE} releases the mouse"))
 
 
-def ask_updates_folder(wanted):
-    if not wanted:
-        return ""
-
-    heading("Update installers")
-    remark(f"{len(wanted)} of the updates chosen are not in the catalogue")
-    remark("they install only if you already have their installer files")
-
-    if not confirm.ask("Do you have the installer files", False):
-        return ""
-
-    return browser.ask_folder("Folder holding the installer files", os.getcwd())
-
-
-def stepper(bar):
-    shown = [NOTHING_SHOWN]
-
-    def advanced(amount):
-        progress.advanced(bar, amount)
-
-        if progress.percentage_of(bar) != shown[0]:
-            shown[0] = progress.percentage_of(bar)
-            progress.show(bar)
-
-    return advanced
-
-
-def fetch_one(entry, record):
-    bar = progress.new(entry["name"], gathering.size_of(record) or EMPTY_BAR)
-
-    try:
-        path = gathering.fetch(entry, record, stepper(bar))
-    except BaseException:
-        frames.finish()
-
-        raise
-
-    progress.finish(bar)
-
-    return path
-
-
-def report_fetched(entry, record, held):
-    if gathering.verifiable(record):
-        announce(styling.success("  {} {}".format(entry["name"], held)))
-
-        return
-
-    announce(
-        styling.warning(
-            "  {} carries no published checksum and was taken as it came".format(entry["name"])
-        )
-    )
-
-
-def fetch_update(entry):
-    record = gathering.record_for(entry)
-    cached = gathering.cached(entry, record)
-    path = cached or fetch_one(entry, record)
-
-    report_fetched(entry, record, "already downloaded" if cached else "downloaded")
-
-    return path
-
-
-def fetch_updates(wanted):
-    catalogued = gathering.catalogued(wanted)
-
-    if not catalogued:
-        return {}
-
-    announce("")
-    announce(styling.bold(styling.underlined("Downloads")))
-    announce("")
-    announce(
-        styling.muted(f"  installers come from {addresses.SITE} and are kept for the next build")
-    )
-    announce("")
-
-    held = {}
-
-    for entry in catalogued:
-        try:
-            held[updates.identifier_of(entry)] = fetch_update(entry)
-        except FETCH_TROUBLE as refused:
-            announce(styling.warning("  {} was not installed: {}".format(entry["name"], refused)))
-
-    return held
-
-
-def report_survey(survey, target):
-    announce("")
-    announce(styling.bold(styling.underlined("Updates")))
-    announce("")
-
-    for held in staging.present(survey):
-        named = held["entry"]["name"]
-        held_file = styling.muted(held["entry"].get("file", ""))
-
-        announce(f"  {styling.success('will install')} {named:<40} {held_file}")
-
-    for held in staging.absent(survey):
-        named = held["entry"]["name"]
-        wanted_name = held["entry"].get("file", "its installer")
-        notice = styling.muted(f"{wanted_name} not found")
-        label = styling.warning("skipped".ljust(len("will install")))
-
-        announce(f"  {label} {named:<40} {notice}")
-
-    if gathering.uncatalogued([held["entry"] for held in staging.absent(survey)]):
-        announce("")
-        announce(
-            styling.muted("  skipped updates need their installer put in the folder you point at")
-        )
-
-    if staging.present(survey):
-        announce("")
-        announce(styling.muted(f"  copied to {target} and run when Windows first starts"))
-
-
 def configured():
     frames.prepare()
 
@@ -375,7 +202,6 @@ def configured():
     identifier = choose_guest()
     definition = loading.load(identifier)
     guest = loading.document(definition, GUEST_DOCUMENT)
-    catalogue = loading.document(definition, UPDATES_DOCUMENT)
 
     prompting.begin(header_for(guest))
 
@@ -395,20 +221,14 @@ def configured():
     declarations = guest_questions(definition)
     answers = asking.ask_all(declarations)
 
-    heading("Updates")
-    chosen = asking.ask_updates("Updates to install", catalogue, configuration)
-
     floppy_path = media.floppy_for(disc_path, guest)
 
     prompting.end()
 
     summary.show(
         TITLE,
-        summary_rows(identifier, name, directory, disc_path, configuration, answers, chosen),
+        summary_rows(identifier, name, directory, disc_path, configuration, answers),
     )
-
-    for line in sequence_lines(catalogue, chosen):
-        announce(line)
 
     announce("")
 
@@ -422,16 +242,7 @@ def configured():
 
         return 1
 
-    wanted = updates.sequence_for(catalogue, chosen)
-    folder = ask_updates_folder(gathering.uncatalogued(wanted))
-    survey = staging.surveyed(wanted, folder, fetch_updates(wanted))
-    staged = staged_files(identifier, guest, survey)
-
-    report_survey(survey, guest["updates"]["directory"])
-
-    content = answerfile.built_bytes(
-        guest, declarations, answers, product_key, answer_extra(guest, survey)
-    )
+    content = answerfile.built_bytes(guest, declarations, answers, product_key)
 
     announce("")
 
@@ -446,7 +257,6 @@ def configured():
         directory,
         floppy_path,
         lambda caption: progress.step(bar, 1, caption),
-        staged,
     )
 
     progress.finish(bar)

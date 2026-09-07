@@ -4,6 +4,9 @@ Builds a QEMU virtual machine and installs its guest without you sitting through
 installer. You answer a handful of questions; it writes the disks, prepares the boot
 floppy, generates the answer file the installer reads, and starts the machine.
 
+It installs the operating system and nothing else. Anything you want on top of it goes
+on afterwards, by hand.
+
 ## Running it
 
 ```sh
@@ -29,15 +32,6 @@ run.sh           # starts the machine, every time after that
 The script names the emulator and the images by absolute path, so it belongs to the
 machine that built it. Build again on another host rather than carrying it across.
 
-## Updates
-
-A guest can list updates to install after the operating system is up. Each one names a
-file in a software catalogue; at build time it is fetched, checked against the checksum
-the catalogue publishes, and kept in a cache so a later build does not download it
-again. The files are copied onto the system disk and run when the guest first starts.
-
-An update whose checksum cannot be computed is refused rather than installed unverified.
-
 ## Defining a guest
 
 Everything about a guest is data, under `guests/<name>/`:
@@ -47,7 +41,6 @@ Everything about a guest is data, under `guests/<name>/`:
 | `guest.toml` | how it boots, how setup is run, and the answer file's fixed sections |
 | `hardware.toml` | the hardware questions and the values each answer maps to |
 | `questions.toml` | what the installer needs to be told, and where each answer is written |
-| `updates.toml` | the updates offered, in the order they install |
 | `timezones.toml` | the time zones the guest recognises, with their offsets |
 | `assets/` | files copied into the machine, such as the startup batch file |
 

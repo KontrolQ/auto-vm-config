@@ -119,8 +119,8 @@ def floppy_staging(identifier, guest, answers_content):
     }
 
 
-def disk_staging(guest, answers_content, extra_files):
-    staged = dict(extra_files or {})
+def disk_staging(guest, answers_content):
+    staged = {}
 
     if answerfile.target_of(guest) == SYSTEM_TARGET:
         staged[answerfile.file_name(guest)] = answers_content
@@ -155,7 +155,6 @@ def build(
     directory,
     floppy_path=None,
     watcher=None,
-    extra_files=None,
 ):
     moment = clock.now()
 
@@ -173,7 +172,7 @@ def build(
     stage_onto_disk(
         system_path,
         system["first_partition_sector"],
-        disk_staging(guest, answers_content, extra_files),
+        disk_staging(guest, answers_content),
         moment,
     )
     built["system_disk"] = system_path

@@ -1,6 +1,5 @@
-from cli_widgets.widgets import checklist, choice, entry
+from cli_widgets.widgets import choice, entry
 
-from definitions import updates
 from install import validation
 
 KEY = "key"
@@ -132,34 +131,3 @@ def ask(declaration):
 
 def ask_all(declarations):
     return {declaration[KEY]: ask(declaration) for declaration in declarations}
-
-
-def update_option(entry_held):
-    return {
-        "label": entry_held["name"],
-        "note": entry_held.get("note", ""),
-        VALUE: updates.identifier_of(entry_held),
-    }
-
-
-def ticked_positions(offered, chosen_by_default):
-    return [
-        position
-        for position, held in enumerate(offered)
-        if updates.identifier_of(held) in chosen_by_default
-    ]
-
-
-def ask_updates(question, catalogue, configuration):
-    offered = updates.offered(catalogue, configuration)
-
-    if not offered:
-        return []
-
-    chosen = checklist.ask(
-        question,
-        [update_option(held) for held in offered],
-        ticked_positions(offered, updates.defaults_for(catalogue, configuration)),
-    )
-
-    return [held[VALUE] for held in chosen]

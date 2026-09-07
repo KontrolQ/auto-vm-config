@@ -1,2 +1,0 @@
-ECHO {{name}}
-START /WAIT {{directory}}\{{file}} {{arguments}}

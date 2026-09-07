@@ -13,18 +13,6 @@ directory = "WIN98"
 program = "SETUP.EXE"
 arguments = "/IS /IQ /IE /IM /NR /NF"
 
-[updates]
-directory = "C:\\SETUP"
-runner = "UPDATE.BAT"
-runner_asset = "UPDATE.BAT"
-step_asset = "UPDATE.STEP"
-
-[updates.answer_lines]
-Install = ["AddReg=RunOnce.Updates"]
-"RunOnce.Updates" = [
-    'HKLM,"Software\Microsoft\Windows\CurrentVersion\RunOnce","Updates",,"C:\SETUP\UPDATE.BAT"',
-]
-
 [boot]
 prefer = "disc"
 when_absent = "ask"

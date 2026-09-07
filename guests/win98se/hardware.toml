@@ -7,7 +7,7 @@ default = "pentium"
 [[group.options]]
 value = "pentium3"
 label = "Pentium III"
-note = "MMX and SSE, but setup faults part way through"
+note = "MMX and SSE, but setup faults and does not recover"
 
 [[group.options]]
 value = "pentium2"
@@ -17,7 +17,7 @@ note = "MMX"
 [[group.options]]
 value = "pentium"
 label = "Pentium"
-note = "no MMX, and the only one setup finishes on"
+note = "no MMX; setup still faults once, then carries on"
 
 [[group.options]]
 value = "486"

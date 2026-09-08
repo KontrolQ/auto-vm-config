@@ -7,7 +7,7 @@ default = "pentium"
 [[group.options]]
 value = "pentium3"
 label = "Pentium III"
-note = "MMX and SSE, but setup faults and does not recover"
+note = "MMX and SSE, but setup has faulted here and not recovered"
 
 [[group.options]]
 value = "pentium2"
@@ -17,7 +17,7 @@ note = "MMX"
 [[group.options]]
 value = "pentium"
 label = "Pentium"
-note = "no MMX; setup still faults once, then carries on"
+note = "no MMX, and the one that installs cleanly"
 
 [[group.options]]
 value = "486"
@@ -134,17 +134,17 @@ default = "sb16"
 [[group.options]]
 value = "sb16"
 label = "Sound Blaster 16"
-note = "driver is in the box"
+note = "found during setup, driver is in the box"
 
 [[group.options]]
 value = "es1370"
 label = "Ensoniq AudioPCI"
-note = "PCI, driver is in the box"
+note = "has a driver, but nothing on the PCI bus is ever detected"
 
 [[group.options]]
 value = "ac97"
 label = "Intel AC97"
-note = "needs a supplied driver"
+note = "same, and the driver is not on the disc"
 
 [[group.options]]
 value = "none"
@@ -222,4 +222,4 @@ note = "steadier on this system"
 [[group.options]]
 value = "acpi"
 label = "ACPI"
-note = "can stall during setup"
+note = "offered, but this system refuses the tables and falls back to APM"

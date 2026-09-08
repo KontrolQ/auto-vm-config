@@ -171,9 +171,7 @@ def report_built(built):
 
 
 def running_paths(built):
-    return {
-        name: path for name, path in built.items() if name in (drives.SYSTEM_DISK, drives.DATA_DISK)
-    }
+    return {name: path for name, path in built.items() if name != drives.FLOPPY}
 
 
 def report_scripts(scripts, configuration):

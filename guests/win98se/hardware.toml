@@ -155,22 +155,27 @@ label = "None"
 key = "network"
 question = "Network adapter"
 kind = "choice"
-default = "pcnet"
+default = "ne2k_isa"
+
+[[group.options]]
+value = "ne2k_isa"
+label = "NE2000 ISA"
+note = "the only one setup finds; confirm IRQ 3 and 300-31F when it asks"
 
 [[group.options]]
 value = "pcnet"
 label = "AMD PCnet PCI"
-note = "driver is in the box"
+note = "has a driver, but nothing on the PCI bus is ever detected"
 
 [[group.options]]
 value = "ne2k_pci"
 label = "NE2000 PCI"
-note = "wants the RTL8029 driver"
+note = "same, and it wants the RTL8029 driver besides"
 
 [[group.options]]
 value = "rtl8139"
 label = "Realtek RTL8139"
-note = "needs a supplied driver"
+note = "same, and the driver is not on the disc"
 
 [[group.options]]
 value = "none"

@@ -35,6 +35,10 @@ UNIX_AUDIO_DRIVER = "pa"
 
 NETWORK_BACKEND = "net0"
 
+NETWORK_DEVICE_SETTINGS = {
+    "ne2k_isa": "irq=3",
+}
+
 
 def default_audio_driver():
     if sys.platform == "win32":
@@ -83,6 +87,13 @@ def backend_options(extra_options):
     return ",".join(["user", f"id={NETWORK_BACKEND}", *list(extra_options)])
 
 
+def network_device_options(chosen):
+    settings = NETWORK_DEVICE_SETTINGS.get(chosen)
+    pieces = [chosen, settings] if settings else [chosen]
+
+    return ",".join([*pieces, f"netdev={NETWORK_BACKEND}"])
+
+
 def network_arguments(configuration, extra_options=()):
     chosen = configuration.get(NETWORK, NONE)
 
@@ -93,7 +104,7 @@ def network_arguments(configuration, extra_options=()):
         "-netdev",
         backend_options(extra_options),
         "-device",
-        f"{chosen},netdev={NETWORK_BACKEND}",
+        network_device_options(chosen),
     ]
 
 
